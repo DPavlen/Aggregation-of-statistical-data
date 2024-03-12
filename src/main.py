@@ -19,7 +19,6 @@ load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
 
-# All handlers should be attached to the Router (or Dispatcher)
 bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher()
 
@@ -30,36 +29,27 @@ async def command_start_handler(message: Message) -> None:
     await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
-# @dp.message()
-# async def echo_handler(message: types.Message) -> None:
-#     """
-#     Handler will forward receive a message back to the sender
-#     By default, message handler will handle all message types (like a text, photo, sticker etc.)
-#     """
-#     try:
-#         await message.send_copy(chat_id=message.chat.id)
-#     except TypeError:
-#         await message.answer("Nice try!")
-
-
-# @dp.register_message_handler(content_types=['text'])
 @dp.message(F.text, Command("group"))
-async def any_message(message: types.Message):
-    msg_data = json.loads(message.text)
-    dt_from = msg_data['dt_from']
-    dt_upto = msg_data['dt_upto']
-    group_type = msg_data['group_type']
-    print(msg_data)
-    result = main_app(dt_from, dt_upto, group_type)
+async def any_message(message: types.Message)-> None:
+    # Проверка наличия текста в сообщении
+    if not message.text:
+        await message.answer("The message is empty.")
+        return
 
-    await bot.send_message(message.chat.id, result)
-    # await message.answer(result)
+    try:
+        msg_data = json.loads(message.text)
+        dt_from = msg_data['dt_from']
+        dt_upto = msg_data['dt_upto']
+        group_type = msg_data['group_type']
+        print(msg_data)
+        result = main_app(dt_from, dt_upto, group_type)
+        await bot.send_message(message.chat.id, result)
+    except json.JSONDecodeError as e:
+        await message.answer(f"Error decoding JSON: {e}")
 
 
 
 async def main() -> None:
-    # bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
-    # await dp.start_polling(bot)
     await dp.start_polling(bot)
 
 

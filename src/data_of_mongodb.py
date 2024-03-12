@@ -6,19 +6,14 @@ from dateutil.relativedelta import relativedelta
 client = pymongo.MongoClient("mongodb://127.0.0.1:2717")
 db = client.mymongo
 collection = db.admin.collect
-# db = client.newdb
-# coll = db.newcol
 
 
 def init_dict(gte, lte, group):
-    # def init_dict(st, fn, group):
     """
     gte: ISODate("2022-09-01T00:00:00") - начальная дата
     lte: ISODate("2022-12-31T23:59:00") - конечная дата
     group - строка для указания временной группировки по месяцам, дням или часам.
-    Функция принимает начальную (st)
-    и конечную (fn) даты,
-    а также строку gr для указания временной группировки по месяцам, дням или часам."""
+    """
     tmp_aggregate = {}
     if group == "month":
         n = gte.month - lte.month + 1
@@ -64,6 +59,7 @@ def get_key(dt_data, grouping_unit):
 
 def main_app(dt_from, dt_upto, group_type):
     """
+    Главная функция
     dt_from - начальная дата в формате %Y-%m-%dT%H:%M:%S ;
     dt_upto - конечная дата в формате %Y-%m-%dT%H:%M:%S ;
     group_type - группировка по времени ;
