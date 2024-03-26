@@ -36,16 +36,16 @@ async def any_message(message: types.Message)-> None:
         await message.answer("The message is empty.")
         return
 
-    try:
-        msg_data = json.loads(message.text)
-        dt_from = msg_data['dt_from']
-        dt_upto = msg_data['dt_upto']
-        group_type = msg_data['group_type']
-        print(msg_data)
-        result = main_app(dt_from, dt_upto, group_type)
-        await bot.send_message(message.chat.id, result)
-    except json.JSONDecodeError as e:
-        await message.answer(f"Error decoding JSON: {e}")
+    # try:
+    msg_data = json.loads(message.text)
+    dt_from = msg_data['dt_from']
+    dt_upto = msg_data['dt_upto']
+    group_type = msg_data['group_type']
+    print(msg_data)
+    result = main_app(dt_from, dt_upto, group_type)
+    await bot.send_message(message.chat.id, result)
+    # except json.JSONDecodeError as e:
+    #     await message.answer(f"Error decoding JSON: {e}")
 
 
 
